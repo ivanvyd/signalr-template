@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SignalRTemplate.Domain;
+using SignalRTemplate.WebApi.Models;
 using SignalRTemplate.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,14 @@ builder.Services.AddAuthorization();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
 
 builder.Services.AddSingleton<IRepository, Repository>();
 builder.Services.AddScoped<IService, Service>();
@@ -25,6 +34,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
@@ -49,9 +60,9 @@ app.MapDelete("/items/{itemId}", (IService service, [FromRoute] int itemId) =>
 .Produces(StatusCodes.Status204NoContent)
 .WithOpenApi();
 
-app.MapPost("/items", (IService service, [FromBody] string name) =>
+app.MapPost("/items", (IService service, [FromBody] CreateItemModel data) =>
 {
-    service.CreateItem(name);
+    service.CreateItem(data.Name);
 
     return Results.NoContent();
 })

@@ -7,7 +7,7 @@ public sealed class Repository : IRepository
     public Repository()
     {
         _items = [];
-        for (int i = 1; i <= 20; i++)
+        for (int i = 1; i <= 5; i++)
         {
             _items.Add(new Item(i, $"Item {i}"));
         }
