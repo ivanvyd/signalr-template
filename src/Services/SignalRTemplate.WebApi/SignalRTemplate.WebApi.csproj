@@ -13,6 +13,7 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\SignalRTemplate.Domain\SignalRTemplate.Domain.csproj" />
+    <ProjectReference Include="..\SignalRTemplate.Infrastructure\SignalRTemplate.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

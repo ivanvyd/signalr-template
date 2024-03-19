@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SignalRTemplate.Domain;
+using SignalRTemplate.Infrastructure;
 using SignalRTemplate.WebApi.Models;
 using SignalRTemplate.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddAuthorization();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -15,14 +16,21 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader());
+    options.AddDefaultPolicy(builder => builder
+        .WithOrigins("http://localhost:3000")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
 });
 
 builder.Services.AddSingleton<IRepository, Repository>();
-builder.Services.AddScoped<IService, Service>();
+
+// builder.Services.AddScoped<IService, Service>();
+builder.Services.AddScoped<IService, ServiceDecorator>(serviceProvider => new ServiceDecorator(
+    new Service(serviceProvider.GetRequiredService<IRepository>()),
+    serviceProvider.GetRequiredService<IHubContext<ItemsHub>>()));
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -50,9 +58,9 @@ app.MapGet("/items", (IService service) =>
 .Produces<List<Item>>(StatusCodes.Status200OK)
 .WithOpenApi();
 
-app.MapDelete("/items/{itemId}", (IService service, [FromRoute] int itemId) =>
+app.MapDelete("/items/{itemId}", async (IService service, [FromRoute] int itemId) =>
 {
-    service.DeleteItem(itemId);
+    await service.DeleteItem(itemId);
 
     return Results.NoContent();
 })
@@ -60,14 +68,16 @@ app.MapDelete("/items/{itemId}", (IService service, [FromRoute] int itemId) =>
 .Produces(StatusCodes.Status204NoContent)
 .WithOpenApi();
 
-app.MapPost("/items", (IService service, [FromBody] CreateItemModel data) =>
+app.MapPost("/items", async (IService service, [FromBody] CreateItemModel data) =>
 {
-    service.CreateItem(data.Name);
+    await service.CreateItem(data.Name);
 
     return Results.NoContent();
 })
 .WithSummary("Create Item")
 .Produces(StatusCodes.Status204NoContent)
 .WithOpenApi();
+
+app.MapHub<ItemsHub>("/itemsHub");
 
 app.Run();

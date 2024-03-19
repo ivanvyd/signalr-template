@@ -4,7 +4,7 @@ namespace SignalRTemplate.WebApi.Services;
 
 public interface IService
 {
-    Item CreateItem(string name);
-    bool DeleteItem(int id);
-    List<Item> GetItems();
+    ValueTask<Item> CreateItem(string name);
+    ValueTask<bool> DeleteItem(int id);
+    ValueTask<List<Item>> GetItems();
 }

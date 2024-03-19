@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import './App.css';
 
 interface Item {
@@ -9,11 +10,12 @@ interface Item {
 
 const ItemList: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
+  let connection: HubConnection | null = null;
 
   const fetchItems = () => {
     axios.get('https://localhost:44313/items')
       .then(response => {
-        setItems(response.data);
+        setItems(response.data.result);
       });
   };
 
@@ -33,6 +35,24 @@ const ItemList: React.FC = () => {
 
   useEffect(() => {
     fetchItems();
+  
+    connection = new HubConnectionBuilder()
+      .withUrl("https://localhost:44313/itemsHub")
+      .build();
+  
+    connection.start()
+      .then(() => console.log('Connection started!'))
+      .catch(err => console.log('Error while establishing connection :('));
+  
+    connection.on("ReceiveItemsUpdate", () => {
+      fetchItems();
+    });
+  
+    return () => {
+      if (connection) {
+        connection.stop();
+      }
+    };
   }, []);
 
   return (

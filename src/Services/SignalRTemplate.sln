@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRTemplate.WebApi", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRTemplate.Domain", "SignalRTemplate.Domain\SignalRTemplate.Domain.csproj", "{143B899C-2675-41E4-8C36-C556740BAAA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRTemplate.Infrastructure", "SignalRTemplate.Infrastructure\SignalRTemplate.Infrastructure.csproj", "{DB61F776-8184-4F3C-A74E-43854683ECBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{143B899C-2675-41E4-8C36-C556740BAAA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{143B899C-2675-41E4-8C36-C556740BAAA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{143B899C-2675-41E4-8C36-C556740BAAA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB61F776-8184-4F3C-A74E-43854683ECBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB61F776-8184-4F3C-A74E-43854683ECBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB61F776-8184-4F3C-A74E-43854683ECBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB61F776-8184-4F3C-A74E-43854683ECBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
